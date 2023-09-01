@@ -1,58 +1,42 @@
 package scr.SocketServidor;
 
-// Importa las clases necesarias para trabajar con sockets y datagramas UDP.
+import java.io.*;
 import java.net.*;
 
 public class SocketUDP_Servidor {
     public static void main(String[] args) {
+        final int PUERTO = 12345;
+
         try {
-            /*
-             * Crea un socket UDP en el puerto 12345, que es el puerto en el que el servidor
-             * espera recibir datagramas.
-             */
-            DatagramSocket serverSocket = new DatagramSocket(12345);
+            // Creamos un socket UDP en el puerto especificado
+            DatagramSocket socket = new DatagramSocket(PUERTO);
 
-            /*
-             * Crea un buffer receiveData y un DatagramPacket receivePacket para recibir los
-             * datos enviados por el cliente.
-             */
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            while (true) {
+                // Preparamos un buffer para recibir los datos del cliente
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
-            System.out.println("Esperando la conexión del cliente UDP...");
+                // Esperamos a recibir un paquete de datos del cliente
+                socket.receive(receivePacket);
+                
+                // Convertimos los datos recibidos en un mensaje de texto
+                String mensajeRecibido = new String(receivePacket.getData(), 0, receivePacket.getLength());
 
-            /*
-             * El servidor entra en modo de espera y recibe el datagrama del cliente en el
-             * receivePacket.
-             */
-            serverSocket.receive(receivePacket);
+                // Obtenemos la dirección IP y el puerto del cliente que envió el mensaje
+                InetAddress clientAddress = receivePacket.getAddress();
+                int clientPort = receivePacket.getPort();
 
-            /*
-             * Convierte los datos recibidos en un String y obtiene la dirección IP y el
-             * puerto del cliente.
-             */
-            String receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
-            InetAddress clientAddress = receivePacket.getAddress();
-            int clientPort = receivePacket.getPort();
+                // Mostramos el mensaje recibido en la consola del servidor
+                System.out.println("Mensaje recibido del cliente: " + mensajeRecibido);
 
-            /*
-             * Muestra en la consola el mensaje recibido del cliente y la dirección IP y el
-             * puerto del cliente.
-             */
-            System.out.println("Mensaje recibido del cliente: " + receivedMessage);
-            System.out.println("Desde: " + clientAddress + ":" + clientPort);
+                // Reenviamos el mensaje al Cliente2 (este es solo un ejemplo, debes tener lógica para determinar a qué cliente reenviarlo)
+                String mensajeAEnviar = "Mensaje del Cliente1 al Cliente2: " + mensajeRecibido;
+                byte[] sendData = mensajeAEnviar.getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientAddress, clientPort);
 
-            /*
-             * Cierra el socket del servidor para liberar los recursos después de haber
-             * terminado la comunicación.
-             */
-            serverSocket.close();
-
-            /*
-             * Cualquier excepción que ocurra durante la ejecución del código se maneja e
-             * imprime su traza en la consola.
-             */
-        } catch (Exception e) {
+                socket.send(sendPacket);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

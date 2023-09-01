@@ -1,40 +1,36 @@
-SocketUDP en Java - Guía de Uso
+SocketUDP - Comunicación de Cliente a Cliente pasando por un Servidor
 
-Este archivo README proporciona una guía básica sobre el funcionamiento de los sockets UDP utilizando los 
-códigos de programación en Java proporcionados.
+Este proyecto ejemplifica el uso del protocolo de Datagrama de Usuario (UDP) en Java para establecer una 
+comunicación simple entre dos clientes y un servidor. El objetivo es que el Cliente1 envíe un mensaje al 
+Cliente2, pero dicho mensaje debe pasar por el servidor para llegar al Cliente2.
 
-Descripción:
-El protocolo de datagramas de usuario (UDP) es un protocolo de transporte que permite la comunicación entre 
-dispositivos a través de la transmisión de paquetes de datos independientes. Este tipo de comunicación es 
-útil para transferencias rápidas y sin garantía de entrega y recepción en un entorno de red.
+Estructura:
 
-SocketUDP_Servidor:
-La clase SocketUDP_Servidor implementa un servidor UDP que escucha en el puerto 12345 para recibir mensajes 
-de los clientes. Los pasos clave son:
+El proyecto se divide en tres clases Java:
+1. SocketUDP_Servidor: Esta clase representa el servidor que actúa como intermediario para reenviar mensajes 
+del Cliente1 al Cliente2.
+2. SocketUDP_Cliente1: Este es el primer cliente que envía un mensaje al servidor.
+3. SocketUDP_Cliente2: Este es el segundo cliente que recibe un mensaje del servidor.
 
-1. Crear un DatagramSocket en el puerto deseado.
-2. Definir un búfer para recibir los datos y un DatagramPacket para recibir el paquete.
-3. Esperar la conexión del cliente usando el método receive().
-4. Extraer y mostrar el mensaje recibido, la dirección del cliente y el puerto.
-5. Cerrar el socket del servidor después de la comunicación.
+Funcionamiento:
 
-SocketUDP_Cliente:
-La clase SocketUDP_Cliente implementa un cliente UDP que envía un mensaje al servidor en la dirección 
-"localhost" (127.0.0.1) y el puerto 12345. Los pasos clave son:
+El servidor se encarga de escuchar constantemente en un puerto específico (en este caso, el puerto 12345).
+Cuando recibe un mensaje del Cliente1, lo reenvía al Cliente2. Los pasos principales son los siguientes:
 
-1. Crear un DatagramSocket para el cliente.
-2. Definir el mensaje y convertirlo en bytes.
-3. Definir la dirección del servidor y el puerto al que se enviarán los datos.
-4. Crear un DatagramPacket para el envío y enviarlo mediante send().
-5. Cerrar el socket del cliente después del envío.
+1. Cliente1 envía un mensaje al servidor: El Cliente1 crea un paquete que contiene su mensaje, lo convierte 
+en bytes y lo envía al servidor especificando la dirección IP del servidor y el puerto del servidor. 
+El servidor escucha en este puerto y recibe el mensaje.
+2. El servidor reenvía el mensaje al Cliente2: El servidor toma el mensaje recibido del Cliente1 y lo envía 
+al Cliente2 de manera similar, convirtiéndolo en bytes y especificando la dirección IP y el puerto del 
+Cliente2.
+3. Cliente2 recibe el mensaje del servidor: El Cliente2 escucha en su puerto específico y recibe el mensaje 
+del servidor. Luego, muestra el mensaje en la consola.
 
-Uso:
-1. Ejecute SocketUDP_Servidor para iniciar el servidor.
-2. Ejecute SocketUDP_Cliente para enviar un mensaje al servidor.
-3. Verifique la consola del servidor para ver el mensaje recibido y la dirección del cliente.
-4. Cierre la aplicación del servidor después de su uso.
+Configuración:
 
-Notas:
-1. Este ejemplo es básico y no implementa mecanismos de confirmación de recepción ni manejo de errores.
-2. Asegúrese de que no haya conflictos de puertos en uso.
-3. Para comunicación a través de redes, modifique la dirección IP del servidor en SocketUDP_Cliente.
+1. Asegúrate de tener Java instalado en tu sistema.
+2. Ejecuta primero el servidor, luego el Cliente1 y, finalmente, el Cliente2.
+3. El servidor está configurado para escuchar en localhost (la misma máquina). Puedes cambiar la dirección IP 
+a la del servidor si está en una máquina diferente.
+4. El proyecto utiliza el puerto 12345 para la comunicación, asegúrate de que este puerto esté disponible en 
+tu máquina.
