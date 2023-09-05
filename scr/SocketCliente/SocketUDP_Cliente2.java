@@ -9,26 +9,27 @@ public class SocketUDP_Cliente2 {
         final int SERVIDOR_PUERTO = 12345; // Puerto del servidor
 
         try {
-            DatagramSocket socket = new DatagramSocket(); // Creamos un socket UDP
+            DatagramSocket socket = new DatagramSocket(); // Crear un socket UDP para la comunicación
 
-            String mensaje = "¡Hola Servidor, soy Cliente2, recibi el mensaje de Cliente1!"; // Mensaje que queremos enviar
-            byte[] sendData = mensaje.getBytes(); // Convertimos el mensaje en bytes
-            InetAddress serverAddress = InetAddress.getByName(SERVIDOR_IP); // Obtenemos la dirección IP del servidor
+            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
-            // Preparamos un paquete con los datos a enviar
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVIDOR_PUERTO);
-            socket.send(sendPacket); // Enviamos el paquete al servidor
+            // Pedir al usuario que ingrese un nombre
+            System.out.print("Ingresa tu nombre: ");
+            String nombreCliente = userInput.readLine();
 
-            // Preparamos un paquete para recibir la respuesta del servidor
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            socket.receive(receivePacket); // Esperamos a recibir un paquete del servidor
+            while (true) {
+                System.out.print("Escribe un mensaje: ");
+                String mensaje = userInput.readLine();
+                String mensajeAEnviar = "[" + nombreCliente + "] " + mensaje; // Agregar el nombre del cliente al mensaje
 
-            // Convertimos los datos recibidos en un mensaje de texto
-            String mensajeRecibido = new String(receivePacket.getData(), 0, receivePacket.getLength());
-            System.out.println("Mensaje recibido del servidor: " + mensajeRecibido); // Mostramos el mensaje recibido en la consola
+                byte[] sendData = mensajeAEnviar.getBytes(); // Convertir el mensaje en bytes
 
-            socket.close(); // Cerramos el socket
+                InetAddress serverAddress = InetAddress.getByName(SERVIDOR_IP); // Convertir la dirección IP del servidor
+
+                // Enviar el mensaje al servidor
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVIDOR_PUERTO);
+                socket.send(sendPacket);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
